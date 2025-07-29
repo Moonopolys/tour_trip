@@ -4,7 +4,7 @@ from data.loader import bot, db
 from keyboards.inline import lang_buttons
 from config import TEXTS
 from .callbacks import get_name
-from keyboards.default import make_buttons
+from keyboards.default import make_buttons, settings_button
 
 @bot.message_handler(commands=["start"])
 def start(message: Message):

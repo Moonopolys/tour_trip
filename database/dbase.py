@@ -47,3 +47,11 @@ class Database:
     def save_phone_number_and_full_name(self, full_name, phone_number, telegram_id):
         sql = '''UPDATE users SET full_name = ?, phone_number = ? WHERE telegram_id = ?'''
         self.execute(sql, full_name, phone_number, telegram_id, commit=True)
+
+    def create_table_travels(self):
+        sql = '''CREATE TABLE IF NOT EXISTS travels(
+            id INTEGER PRIMARY KEY AUTOINCREMENT
+            name TEXT,
+            price TEXT,
+            
+        )'''
