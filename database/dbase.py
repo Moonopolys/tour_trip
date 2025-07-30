@@ -11,12 +11,13 @@ class Database:
             cursor.execute(sql, args)
 
             res = None
-            if commit:
-                db.commit()
-            elif fetchone:
+            if fetchone:
                 res = cursor.fetchone()
             elif fetchall:
                 res = cursor.fetchall()
+
+            if commit:
+                db.commit()
         return res
 
     def create_table_users(self):
@@ -51,15 +52,22 @@ class Database:
     def create_table_travels(self):
         sql = '''CREATE TABLE IF NOT EXISTS travels(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
+            name_uz TEXT,
+            name_ru TEXT,
+            name_en TEXT,
             price TEXT,
             days INTEGER
         )'''
         self.execute(sql, commit=True)
 
-    def insert_travel(self, name, price, days):
-        sql = '''INSERT INTO travels(name, price, days) VALUES (?, ?, ?)'''
-        self.execute(sql, name, price, days, commit=True)
+    def drop_table_travels(self):
+        sql = '''DROP TABLE IF EXISTS travels'''
+        self.execute(sql, commit=True)
+
+    def insert_travel(self, name_uz, name_ru, name_en, price, days):
+        sql = '''INSERT INTO travels(name_uz, name_ru, name_en, price, days) VALUES (?, ?, ?, ?, ?)
+        RETURNING id'''
+        return self.execute(sql, name_uz, name_ru, name_en, price, days, commit=True, fetchone=True)[0]
 
     def create_table_image(self):
         sql = '''CREATE TABLE IF NOT EXISTS images(
