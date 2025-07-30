@@ -50,8 +50,25 @@ class Database:
 
     def create_table_travels(self):
         sql = '''CREATE TABLE IF NOT EXISTS travels(
-            id INTEGER PRIMARY KEY AUTOINCREMENT
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             price TEXT,
-            
+            days INTEGER
         )'''
+        self.execute(sql, commit=True)
+
+    def insert_travel(self, name, price, days):
+        sql = '''INSERT INTO travels(name, price, days) VALUES (?, ?, ?)'''
+        self.execute(sql, name, price, days, commit=True)
+
+    def create_table_image(self):
+        sql = '''CREATE TABLE IF NOT EXISTS images(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            image TEXT,
+            travel_id INTEGER REFERENCES travels(id)
+        )'''
+        self.execute(sql, commit=True)
+
+    def insert_image(self, image: str, travel_id: int):
+        sql = '''INSERT INTO images(image, travel_id) VALUES (?, ?)'''
+        self.execute(sql, image, travel_id, commit=True)
