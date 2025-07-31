@@ -69,6 +69,14 @@ class Database:
         RETURNING id'''
         return self.execute(sql, name_uz, name_ru, name_en, price, days, commit=True, fetchone=True)[0]
 
+    def view_travels(self, lang):
+        sql = f'''SELECT id, name_{lang} FROM travels'''
+        return self.execute(sql, fetchall=True)
+
+    def select_travels_with_images(self, travel_id, lang):
+        sql = f'''SELECT travels_id, name_{lang}, images.id, images.image FROM travels JOIN images ON images.travel_id = travels.id WHERE travels.id = ?'''
+        return self.execute(sql, travel_id, fetchall=True)
+
     def create_table_image(self):
         sql = '''CREATE TABLE IF NOT EXISTS images(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
