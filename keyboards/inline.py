@@ -1,4 +1,5 @@
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from data.loader import db
 
 def lang_buttons():
     markup = InlineKeyboardMarkup()
@@ -16,3 +17,30 @@ def travels_buttons(travels_list):
         btn = InlineKeyboardButton(travel_name, callback_data=f"travel_{travel_id}")
         markup.add(btn)
     return markup
+
+def travel_pagination_buttons(travel_id: int, page: int = 1):
+    markup = InlineKeyboardMarkup()
+    count = db.count_images(travel_id)[0]
+
+    limit = 1
+    offset = (page - 1) * limit
+
+    image = db.select_image_by_pagination(travel_id, offset, limit)[1]
+
+    previous = InlineKeyboardButton("⬅️", callback_data=f"prev_image_{travel_id}")
+    current_page = InlineKeyboardButton(f"{page}/{count}", callback_data="current_page")
+    next = InlineKeyboardButton("➡️", callback_data=f"next_image_{travel_id}")
+
+    info = InlineKeyboardButton("ℹ️", callback_data=f"info_{travel_id}")
+    back = InlineKeyboardButton("Back", callback_data=f"back_to_{travel_id}")
+
+    if page <= 1:
+        markup.add(current_page, next)
+    elif page >= count:
+        markup.add(previous, current_page)
+    else:
+        markup.add(previous, current_page, next)
+    markup.add(info)
+    markup.add(back)
+
+    return (image, markup)

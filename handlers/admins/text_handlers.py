@@ -1,8 +1,9 @@
+from pyexpat.errors import messages
 from telebot.types import Message, ReplyKeyboardRemove
 
 from data.loader import bot, db
 from keyboards.default import make_buttons
-from config import ADMINS
+from config import ADMINS, TEXTS
 
 admin_buttons_name = [
         "➕ Sayohatlar qo'shihs",
@@ -103,3 +104,13 @@ def save_travel(message: Message):
         msg = bot.send_message(chat_id, "Sayohat rasmini linkini jonating:",
                                reply_markup=ReplyKeyboardRemove())
         bot.register_next_step_handler(msg, get_image_travel)
+
+
+@bot.message_handler(func=lambda message: message.text == "⬅️Ortga")
+def reaction_to_back(message: Message):
+    chat_id = message.chat.id
+    from_user_id = message.from_user.id
+    lang = db.get_lang(from_user_id)
+    btn_names = TEXTS[lang][101]
+    text = TEXTS[lang][4]
+    bot.send_message(chat_id, text, reply_markup=make_buttons(btn_names))
