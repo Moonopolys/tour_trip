@@ -20,6 +20,9 @@ def reaction_to_packages(message: Message):
     elif message.text in TEXTS[lang][101][0]:
         travel_list = db.view_travels(lang)
         bot.send_message(chat_id, "-----------------", reply_markup=travels_buttons(travel_list))
+    elif message.text == "📍 Yaqin joylar":
+        msg = bot.send_message(chat_id, "Lokatsiya jo'nating:")
+        bot.register_next_step_handler(msg, get_loc)
 
 def get_settings(message: Message):
     chat_id = message.chat.id
@@ -42,3 +45,20 @@ def reacting_to_re_registration(message: Message):
     text = TEXTS[lang][1]
     msg = bot.send_message(chat_id, text)
     bot.register_next_step_handler(msg, get_name)
+
+
+def get_loc(message: Message):
+    chart_id = message.chat.id
+    if message.location:
+        lat = message.location.latitude
+        long = message.location.longitude
+        bot.send_location(chart_id, lat, long)
+
+
+@bot.message_handler(content_types=["location"])
+def get_loc(message: Message):
+    chart_id = message.chat.id
+    if message.location:
+        lat = message.location.latitude
+        long = message.location.longitude
+        bot.send_location(chart_id, lat, long)
